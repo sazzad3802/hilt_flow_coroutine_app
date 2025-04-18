@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">HiltFeed</string>
+    <string name="empty_list_message">Blog list is empty</string>
+
+    <string name="posted_by">Posted by %1$s</string>
+    <string name="full_name"> %1$s %2$s %3$s</string>
+    <string name="gender_male">Gender: %1$s</string>
+    <string name="age">Age: %1$s</string>
+    <string name="email">Email: %1$s</string>
+    <string name="phone">Phone: %1$s</string>
+</resources>
