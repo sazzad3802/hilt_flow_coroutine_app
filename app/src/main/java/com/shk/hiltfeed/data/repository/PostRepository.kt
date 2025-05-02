@@ -26,7 +26,7 @@ class PostRepository @Inject constructor(
         return connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
     }
 
-    suspend fun fetchPost(limit: Int, page: Int) = flow {
+    fun fetchPost(limit: Int, page: Int) = flow {
         if (page > 0) {
             emit(ViewState.PaginationLoading)
         } else {

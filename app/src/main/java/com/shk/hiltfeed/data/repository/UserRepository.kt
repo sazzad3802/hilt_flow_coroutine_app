@@ -42,7 +42,7 @@ class UserRepository @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun fetchUserWithPost(id: Long) = flow {
+    fun fetchUserWithPost(id: Long) = flow {
         val user = newsFeedDb.userDao().getUserWithPosts(id)
         if (user!=null) {
             emit(ViewState.Success(user))

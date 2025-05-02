@@ -16,7 +16,8 @@ import com.shk.hiltfeed.data.local.dto.UserDto
         UserDto::class,
         BlogDto::class,
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class NewsFeedDb : RoomDatabase() {
     abstract fun postDao(): PostDao

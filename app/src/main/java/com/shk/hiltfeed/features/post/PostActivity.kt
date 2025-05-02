@@ -11,6 +11,7 @@ import com.shk.hiltfeed.services.UserDataFetchService
 import com.shk.hiltfeed.utils.AppKeys
 import com.shk.hiltfeed.utils.ConstData
 import com.shk.hiltfeed.features.post_details.PostDetailsActivity
+import com.shk.hiltfeed.services.UserFetchWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -39,7 +40,9 @@ class PostActivity : AppCompatActivity() {
                 }
             }
         })
-        startService(Intent(this, UserDataFetchService::class.java))
+//        startService(Intent(this, UserDataFetchService::class.java))
+        UserFetchWorker.enqueue(this)
+
     }
 
     private fun handleSelectedPost() {

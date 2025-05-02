@@ -29,7 +29,6 @@ class UserDataFetchService : Service() {
     private lateinit var runnable: Runnable
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("CCCC", "called")
         coroutineScope.launch { userRepository.fetchUser(ConstData.limit) }
 
         runnable = object : Runnable {
