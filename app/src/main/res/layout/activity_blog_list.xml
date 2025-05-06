@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".features.blog_list.view.BlogListActivity">
+    android:layout_height="match_parent">
 
-    <Button
+    <!--<Button
         android:id="@+id/btnGoToDetail"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -19,7 +18,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"/>
+        android:layout_marginEnd="12dp"/>-->
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -28,7 +27,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/btnGoToDetail"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView

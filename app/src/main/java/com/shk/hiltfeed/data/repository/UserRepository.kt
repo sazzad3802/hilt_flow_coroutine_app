@@ -17,7 +17,7 @@ class UserRepository @Inject constructor(
     private var sharedPref: SharedPref
 ) {
     suspend fun fetchUser(limit: Int): List<User> {
-        val userOffset = sharedPref.getValue(SharedPref.PAGE, 0) as Int
+        val userOffset : Int = sharedPref.getValue(SharedPref.PAGE, 0) as Int
         val userResponse = apiInterface.getUsers(limit, userOffset * limit)
         if (userResponse.isSuccessful) {
             val userDtoList = User.toUserDtoList(userResponse.body()?.users);

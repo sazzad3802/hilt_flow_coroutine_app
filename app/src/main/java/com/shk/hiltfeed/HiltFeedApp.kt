@@ -1,8 +1,10 @@
 package com.shk.hiltfeed
 
 import android.app.Application
-import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import androidx.work.WorkManager
+import com.shk.hiltfeed.data.repository.UserRepository
+import com.shk.hiltfeed.services.CustomWorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -10,7 +12,7 @@ import javax.inject.Inject
 class HiltFeedApp : Application(), Configuration.Provider {
 
     @Inject
-    lateinit var workerFactory: HiltWorkerFactory
+    lateinit var userRepository: UserRepository
 
     companion object {
         lateinit var instance: HiltFeedApp
@@ -19,10 +21,15 @@ class HiltFeedApp : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        // Initialize WorkManager with the custom configuration
+        if (!WorkManager.isInitialized()) {
+            WorkManager.initialize(this, workManagerConfiguration)
+        }
     }
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
-            .setWorkerFactory(workerFactory)
+            .setWorkerFactory(CustomWorkerFactory(userRepository))
             .build()
 }

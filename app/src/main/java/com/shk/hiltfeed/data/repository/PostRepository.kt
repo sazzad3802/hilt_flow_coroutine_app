@@ -72,24 +72,5 @@ class PostRepository @Inject constructor(
         } catch (ex: Exception){
             emit(ViewState.Error(ex.message))
         }
-
-
-        /*val postFromLocal = newsFeedDb.postDao().getPosts(limit, offset)
-        if (postFromLocal.isNotEmpty()) {
-            emit(ViewState.Success(postFromLocal))
-        }
-
-        if (isNetworkAvailable()) {
-            val postResponse = apiInterface.getPosts(limit, offset)
-            if (postResponse.isSuccessful) {
-                val postDtoList = Post.toPostDtoList(postResponse.body()?.posts);
-                newsFeedDb.postDao().insertPosts(postDtoList)
-                emit(ViewState.Success(postDtoList))
-            } else {
-                emit(ViewState.Error(postResponse.message()))
-            }
-        } else if (postFromLocal.isEmpty()) {
-            emit(ViewState.Error("No Internet & No local data"))
-        }*/
     }.flowOn(Dispatchers.IO)
 }

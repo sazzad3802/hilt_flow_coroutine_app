@@ -1,22 +1,16 @@
 package com.shk.hiltfeed.services
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import com.shk.hiltfeed.data.repository.UserRepository
 import com.shk.hiltfeed.utils.ConstData
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-@HiltWorker
-class UserFetchWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted workerParams: WorkerParameters,
+class UserFetchWorker (
+    context: Context,
+    workerParams: WorkerParameters,
     private val userRepository: UserRepository
 ) : CoroutineWorker(context, workerParams) {
 
@@ -41,7 +35,7 @@ class UserFetchWorker @AssistedInject constructor(
 
     private fun enqueueNextWorker() {
         val workRequest = OneTimeWorkRequestBuilder<UserFetchWorker>()
-            .setInitialDelay(30, TimeUnit.SECONDS)
+            .setInitialDelay(10, TimeUnit.SECONDS)
             .build()
 
         WorkManager.getInstance(applicationContext).enqueue(workRequest)

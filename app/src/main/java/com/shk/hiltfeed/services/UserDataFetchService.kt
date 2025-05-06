@@ -25,11 +25,15 @@ class UserDataFetchService : Service() {
         throwable.printStackTrace()
     }
     private val coroutineScope = CoroutineScope(Dispatchers.IO + coroutineExceptionHandler)
+
     val handler = Handler(Looper.getMainLooper())
+
     private lateinit var runnable: Runnable
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        coroutineScope.launch { userRepository.fetchUser(ConstData.limit) }
+        coroutineScope.launch {
+            userRepository.fetchUser(ConstData.limit)
+        }
 
         runnable = object : Runnable {
             override fun run() {

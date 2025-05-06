@@ -1,15 +1,21 @@
 package com.shk.hiltfeed.features.post
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkManager
 import com.shk.hiltfeed.base.ViewState
 import com.shk.hiltfeed.data.local.dto.PostDto
 import com.shk.hiltfeed.data.repository.PostRepository
 import com.shk.hiltfeed.features.post.adapters.PostRecyclerViewAdapter
 import com.shk.hiltfeed.listeners.ItemClickListener
+import com.shk.hiltfeed.services.UserFetchWorker
 import com.shk.hiltfeed.utils.ConstData
+import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,7 +26,10 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class PostViewModel @Inject constructor(private var postRepository: PostRepository) : ViewModel(),
+class PostViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
+    private var postRepository: PostRepository
+) : ViewModel(),
     ItemClickListener {
     var postRecyclerViewAdapter = PostRecyclerViewAdapter()
     var progressBarVisibility = MutableStateFlow(false)
@@ -28,9 +37,17 @@ class PostViewModel @Inject constructor(private var postRepository: PostReposito
     var isLoading = MutableStateFlow(false)
     var selectedPost = MutableSharedFlow<PostDto>()
 
+    private var isWorkScheduled = false
 
     init {
         fetchPosts(ConstData.limit, 0)
+    }
+
+    fun fetchUsersIfNeeded() {
+        if (isWorkScheduled) return
+
+        UserFetchWorker.enqueue(appContext)
+        isWorkScheduled = true
     }
 
 

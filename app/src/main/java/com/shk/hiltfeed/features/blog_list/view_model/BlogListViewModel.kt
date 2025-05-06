@@ -2,6 +2,7 @@ package com.shk.hiltfeed.features.blog_list.view_model
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shk.hiltfeed.data.local.NewsFeedDb
@@ -12,6 +13,7 @@ import com.shk.hiltfeed.features.blog_list.model.ModelCallback
 import com.shk.hiltfeed.features.blog_list.model.data.BlogResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -20,16 +22,18 @@ import javax.inject.Inject
 @HiltViewModel
 class BlogListViewModel @Inject constructor(
     private val model: BlogListRepository,
-    private var newsFeedDb: NewsFeedDb,
+    private var newsFeedDb: NewsFeedDb
 ) : ViewModel() {
 
     val showLoaderLiveData = MutableLiveData<Boolean>()
     val showErrorLiveData = MutableLiveData<String>()
-    val blogListUiModelLiveData: MutableLiveData<List<BlogItem>> by lazy {
-        MutableLiveData<List<BlogItem>>()
-    }
+    val blogListUiModelLiveData = MutableLiveData<List<BlogItem>>()
+
+    private var isDataLoaded = false
 
     fun getBlogList(showLoader: Boolean) {
+        if (isDataLoaded) return
+
         showLoaderLiveData.postValue(showLoader)
 
         model.getBlogList(object : ModelCallback {
@@ -37,6 +41,7 @@ class BlogListViewModel @Inject constructor(
                 val blogListUiModel = getBlogUiModelList(blogResponseList)
                 showLoaderLiveData.postValue(false)
                 blogListUiModelLiveData.postValue(blogListUiModel)
+                isDataLoaded = true
             }
 
             override fun onError(error: String) {
@@ -63,11 +68,9 @@ class BlogListViewModel @Inject constructor(
         }
 
         val postsFromApi = BlogItem.toBlogDtoList(blogUiModelList)
-        Log.d("TAG", "getBlogUiModelList: ")
 
         viewModelScope.launch(Dispatchers.IO) {
             newsFeedDb.blogDao().insertBlogs(postsFromApi)
-            Log.d("TAG", "getBlogUiModelList: ")
         }
 
         return blogUiModelList

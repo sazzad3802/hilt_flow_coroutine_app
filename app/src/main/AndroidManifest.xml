@@ -7,7 +7,8 @@
 
     <application
         android:name=".HiltFeedApp"
-        android:allowBackup="true"
+        tools:replace="android:name"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -20,11 +21,14 @@
             android:name=".features.user_details.UserDetailsActivity"
             android:exported="false" />
         <activity
+            android:name=".features.blog_details.BlogDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".features.post_details.PostDetailsActivity"
             android:exported="false" />
 
         <activity
-            android:name=".features.post.PostActivity"
+            android:name=".features.home.HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,6 +38,18 @@
         </activity>
 
         <service android:name=".services.UserDataFetchService" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
     </application>
 
 </manifest>

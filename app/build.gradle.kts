@@ -11,12 +11,12 @@ plugins {
 
 android {
     namespace = "com.shk.hiltfeed"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.shk.hiltfeed"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -62,52 +62,56 @@ dependencies {
     val recyclerviewVersion = "1.3.1"
     val glideVersion = "4.16.0"
 
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.activity:activity-ktx:1.7.2")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation ("androidx.core:core-ktx:1.9.0")
+    implementation ("androidx.activity:activity-ktx:1.7.2")
+    implementation ("androidx.appcompat:appcompat:1.6.1")
+    implementation ("com.google.android.material:material:1.9.0")
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+    testImplementation ("junit:junit:4.13.2")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
 
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     //CardView and RecyclerView
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:$recyclerviewVersion")
+    implementation ("androidx.cardview:cardview:1.0.0")
+    implementation ("androidx.recyclerview:recyclerview:$recyclerviewVersion")
 
     // for Retrofit and GSON library
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation ("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation ("com.squareup.retrofit2:converter-gson:$retrofitVersion")
 
-    // image loading library
-    implementation("com.github.bumptech.glide:glide:$glideVersion")
+    // Glide
+    implementation ("com.github.bumptech.glide:glide:$glideVersion")
+
+    // coil
+    implementation ("io.coil-kt:coil:2.4.0")
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+
     // livedata
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
 
     // fragment
     implementation ("androidx.fragment:fragment-ktx:1.8.5")
     // activity
-    implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation ("androidx.activity:activity-ktx:1.9.3")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    kapt("com.google.dagger:hilt-compiler:$hiltVersion")
+    implementation ("com.google.dagger:hilt-android:$hiltVersion")
+    kapt ("com.google.dagger:hilt-compiler:$hiltVersion")
+
+    // Hilt integration with androidx features like workManager, room, viewmodel
+    implementation ("androidx.hilt:hilt-work:1.1.0")
+    kapt ("androidx.hilt:hilt-compiler:1.1.0")
 
     // room + hilt
-    implementation("androidx.room:room-runtime:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
+    implementation ("androidx.room:room-runtime:$roomVersion")
+    kapt ("androidx.room:room-compiler:$roomVersion")
+    implementation ("androidx.room:room-ktx:$roomVersion")
 
     // WorkManager
-    implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
-
-    // Hilt WorkManager integration
-    implementation("androidx.hilt:hilt-work:1.1.0")
-    kapt("androidx.hilt:hilt-compiler:1.1.0")
+    implementation ("androidx.work:work-runtime-ktx:$workManagerVersion")
 
 }
