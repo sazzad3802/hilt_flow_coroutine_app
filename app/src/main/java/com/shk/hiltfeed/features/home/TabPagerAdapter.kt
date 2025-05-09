@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.shk.hiltfeed.features.blog_list.view.BlogListFragment
 import com.shk.hiltfeed.features.post.PostFragment
 
+/*
 class TabPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
     override fun getItemCount(): Int = 2
 
@@ -16,4 +17,4 @@ class TabPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter
             else -> throw IllegalArgumentException("Invalid position")
         }
     }
-}
+}*/

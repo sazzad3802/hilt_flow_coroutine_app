@@ -1,96 +1,106 @@
 package com.shk.hiltfeed.features.home
 
-import android.os.Bundle
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.net.ConnectivityManager
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayoutMediator
-import com.shk.hiltfeed.databinding.ActivityHomeBinding
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
+import android.os.Bundle
+import androidx.compose.foundation.layout.Arrangement.Center
+import androidx.compose.runtime.LaunchedEffect
+import com.shk.hiltfeed.features.blog_list.view.BlogListFragment
+import com.shk.hiltfeed.features.post.PostFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityHomeBinding
+class HomeActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
-
-    val singleThreadContext = newSingleThreadContext("CounterThread") // ensure single thread execution to avoid race problem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        setupViewPager()
-        setupTabLayout()
-        setupUserCount()
-    }
-
-    private fun setupUserCount() {
-        // for livedata approach
-        /*homeViewModel.userCount.observe(this) { count ->
-            binding.textUserCount.text = "$count Users"
-            Snackbar.make(binding.root, count.toString(), Snackbar.LENGTH_SHORT).show()
-        }*/
-
-        // for flow approach
-        lifecycleScope.launch(singleThreadContext) {
-            // below "repeatOnLifecycle" helps surviving from configuration changes + otherwise flow keeps running even when ui is in bg, which causes memory leak and app crash
-            // always need to use when collecting flow in activity / fragment
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.userCount
-                    .combine(homeViewModel.lastCount) { count, lastCount ->
-                        Pair(count, lastCount)
-                    }
-                    .collect { (count, lastCount) ->
-                        withContext(Dispatchers.Main) {
-                            binding.textUserCount.text = "$count Users"
-                            if(count > lastCount){
-                                Snackbar.make(binding.root, binding.textUserCount.text, Snackbar.LENGTH_SHORT).show()
-                                homeViewModel.updateLastCount(count)
-                            }
-                    }
-                }
-            }
-        }
-
-    }
-
-    private fun setupViewPager() {
-        binding.mViewPager.adapter = TabPagerAdapter(this)
-        binding.mViewPager.isUserInputEnabled = true
-    }
-
-    private fun setupTabLayout() {
-        TabLayoutMediator(binding.mTabLayout, binding.mViewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Posts"
-                1 -> "Blogs"
-                else -> null
-            }
-        }.attach()
-    }
-
-
-
-
-
-    // to ensure thread safety and avoid race condition, introduce @volatile and synchronized
-    companion object {
-        @Volatile var count = 4
-        fun increment() {
-            synchronized(this) {
-                count++
+        setContent {
+            Surface(modifier = Modifier.fillMaxSize()) {
+                HomeScreen(homeViewModel)
             }
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+}
+
+@Composable
+fun HomeScreen(viewModel: HomeViewModel) {
+    val tabs = listOf("Posts", "Blogs")
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // User count
+        UserCount(viewModel)
+
+        // Tabs
+        TabRow(selectedTabIndex = selectedTabIndex) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index },
+                    text = { Text(text = title) }
+                )
+            }
+        }
+
+        // Content
+        when (selectedTabIndex) {
+            0 -> PostFragment()
+            1 -> BlogListFragment()
+        }
+    }
+}
+
+@Composable
+private fun UserCount(viewModel: HomeViewModel) {
+    val userCount by viewModel.userCount.collectAsStateWithLifecycle()
+    val lastCount by viewModel.lastCount.collectAsStateWithLifecycle()
+
+    LaunchedEffect(userCount) {
+        if (userCount > lastCount) {
+            viewModel.updateLastCount(userCount)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "$userCount Users", style = MaterialTheme.typography.titleMedium)
+    }
 }
