@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import android.os.Bundle
 import androidx.compose.foundation.layout.Arrangement.Center
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import com.shk.hiltfeed.features.blog_list.view.BlogListFragment
 import com.shk.hiltfeed.features.post.PostFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,24 +60,22 @@ class HomeActivity : ComponentActivity() {
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
     val tabs = listOf("Posts", "Blogs")
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // User count
         UserCount(viewModel)
 
-        // Tabs
         TabRow(selectedTabIndex = selectedTabIndex) {
             tabs.forEachIndexed { index, title ->
                 Tab(
                     selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index },
+                    onClick = { viewModel.updateTabIndex(index) },
                     text = { Text(text = title) }
                 )
+                
             }
         }
 
-        // Content
         when (selectedTabIndex) {
             0 -> PostFragment()
             1 -> BlogListFragment()

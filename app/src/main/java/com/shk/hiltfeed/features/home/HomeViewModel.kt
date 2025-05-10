@@ -1,5 +1,10 @@
 package com.shk.hiltfeed.features.home
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,6 +40,9 @@ class HomeViewModel @Inject constructor(
 
     // flow approach if initialised and then collected
 
+    private var _selectedTabIndex = MutableStateFlow(0)
+    var selectedTabIndex: StateFlow<Int> = _selectedTabIndex.asStateFlow()
+
     val lastCount: StateFlow<Int> = savedStateHandle.getStateFlow(LAST_COUNT, 0)
 
     private val _userCount = MutableStateFlow(0)
@@ -52,6 +60,10 @@ class HomeViewModel @Inject constructor(
 
     fun updateLastCount(lastCount: Int) {
         savedStateHandle[LAST_COUNT] = lastCount
+    }
+
+    fun updateTabIndex(index: Int) {
+        _selectedTabIndex.value = index
     }
 
 //    val userCount: Flow<Int> = userDao.observeUserCount() // can do this if collect and initialise at one go
